@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Crop Prediction</title>
+	<style>
+		body {
+			background-image: url("file://Mac/Home/Downloads/Farmer.jpg");
+			background-size: cover;
+			background-position: center;
+			background-color: white;
+			padding-top: 100px;
+		}
+		#header {
+			position: relative;
+			height: 100px;
+			background-size: cover;
+			background-position: center;
+			text-align: center;
+			color: white;
+			font-size: 36px;
+			font-weight: bold;
+			padding-top: 50px;
+			box-sizing: border-box;
+			text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+
+		}
+		#content {
+			width: 80%;
+			margin: 0 auto;
+			padding: 50px;
+			box-sizing: border-box;
+		}
+		.row {
+			display: flex;
+			flex-wrap: wrap;
+			margin-bottom: 20px;
+		}
+		.col {
+			flex: 1;
+			margin-right: 20px;
+			box-sizing: border-box;
+		}
+		.col:last-child {
+			margin-right: 0;
+		}
+		textarea {
+			width: 100%;
+			height: 50px;
+			padding: 10px;
+			box-sizing: border-box;
+			resize: none;
+		}
+		label {
+			display: block;
+			margin-bottom: 5px;
+		}
+		button {
+			display: block;
+			margin: 0 auto;
+			padding: 25px;
+			background-color: #4CAF50;
+			color: white;
+			border: none;
+			border-radius: 20px;
+			cursor: pointer;
+		}
+		button:hover {
+			background-color: #3e8e41;
+		}
+	</style>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			$("button").click(function() {
+				var input_values = {
+					'playground': parseFloat($('#input2').val()),
+					'auditorium': parseFloat($('#input3').val()),
+					'theatre': parseFloat($('#input3').val()),
+					'library': parseFloat($('#input4').val()),
+					'laboratory': parseFloat($('#input5').val()),
+					'conference_hall': parseFloat($('#input6').val()),
+					'health_center': parseFloat($('#input7').val())
+					'gymnasium_fitness_center': parseFloat($('#input7').val())
+					'indoor_stadium': parseFloat($('#input7').val())
+					'common_room': parseFloat($('#input7').val())
+					'computer_center': parseFloat($('#input7').val())
+					'cafeteria': parseFloat($('#input7').val())
+				};
+				$.ajax({
+					type: 'POST',
+					url: '/predict',
+					data: input_values,
+					dataType: 'json',
+					success: function(response) {
+						alert(response.prediction);
+					}
+				});
+			});
+		});
+	</script>
+</head>
+</head>
+<body>
+	<div id="header">
+		Crop Prediction
+	</div>
+	<div id="content">
+		<div class="row">
+			<div class="col">
+				<label for="Input1"></label>
+				<textarea id="input1" placeholder="playground"></textarea>
+			</div>
+			<div class="col">
+				<label for="input2"></label>
+				<textarea id="input2" placeholder="auditorium"></textarea>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<label for="input3"></label>
+				<textarea id="input3" placeholder="theatre"></textarea>
+			</div>
+			<div class="col">
+				<label for="input4"></label>
+				<textarea id="input4" placeholder="laboratory"></textarea>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<label for="input5"></label>
+				<textarea id="input5" placeholder="conference hall"></textarea>
+			</div>
+			<div class="col">
+				<label for="input6"></label>
+				<textarea id="input6" placeholder="health center"></textarea>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<label for="input7"></label>
+				<textarea id="input7" placeholder="Gymnasium"></textarea>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<label for="input7"></label>
+				<textarea id="input7" placeholder="Indoor Stadium"></textarea>
+			</div>
+		</div>
+
+
+		<button type="submit" onclick="predictCrop">Predict</button>
+
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+		$(document).ready(function() {
+			$('button').click(function() {
+				predictCrop();
+			});
+		});
+
+		function predictCrop() {
+			// get values of input fields
+			const soil_ph = parseFloat(document.getElementById('input2').value);
+			const phosphorous = parseFloat(document.getElementById('input3').value);
+			const nitrogen = parseFloat(document.getElementById('input4').value);
+			const potash = parseFloat(document.getElementById('input5').value);
+			const temperature = parseFloat(document.getElementById('input6').value);
+			const rainfall = parseFloat(document.getElementById('input7').value);
+
+			// send input values to the server
+			fetch('/predict', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					'soil_ph': soil_ph,
+					'phosphorous': phosphorous,
+					'nitrogen': nitrogen,
+					'potash': potash,
+					'temperature': temperature,
+					'rainfall': rainfall
+				})
+			})
+			.then(response => response.json())
+			.then(data => {
+				alert(data.prediction);
+			})
+			.catch(error => {
+				console.error(error);
+			});
+		}
+		</script>
+
+	</div>
+	
+</body>
+</html>
